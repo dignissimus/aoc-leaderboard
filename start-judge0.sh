@@ -45,10 +45,10 @@ fi
 # Run services
 echo "Starting Judge0 services..."
 cd "$DIR_NAME" || exit
-docker-compose up -d db redis
+docker compose up -d db redis
 echo "Waiting for database and redis..."
 sleep 10s
-docker-compose up -d
+docker compose up -d
 echo "Waiting for remaining services..."
 sleep 5s
 

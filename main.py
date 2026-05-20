@@ -31,12 +31,15 @@ async def index(request: Request, db: Session = Depends(get_db), token: str = De
     participants = db.query(Participant).all()
     # Days 1 to 25
     days = list(range(1, 26))
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "days": days,
-        "participants": participants,
-        "token": token
-    })
+    return templates.TemplateResponse(
+        request=request, 
+        name="index.html", 
+        context={
+            "days": days,
+            "participants": participants,
+            "token": token
+        }
+    )
 
 @app.get("/day/{day}", response_class=HTMLResponse)
 async def day_view(day: int, request: Request, db: Session = Depends(get_db), token: str = Depends(verify_token)):
@@ -80,14 +83,17 @@ async def day_view(day: int, request: Request, db: Session = Depends(get_db), to
     leaderboard1 = get_leaderboard(1)
     leaderboard2 = get_leaderboard(2)
     
-    return templates.TemplateResponse("day.html", {
-        "request": request,
-        "day": day,
-        "participants": participants,
-        "leaderboard1": leaderboard1,
-        "leaderboard2": leaderboard2,
-        "token": token
-    })
+    return templates.TemplateResponse(
+        request=request, 
+        name="day.html", 
+        context={
+            "day": day,
+            "participants": participants,
+            "leaderboard1": leaderboard1,
+            "leaderboard2": leaderboard2,
+            "token": token
+        }
+    )
 
 @app.post("/submit/input")
 async def submit_input(
