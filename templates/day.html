@@ -61,7 +61,7 @@
             {% for entry in leaderboard1 %}
             <tr>
                 <td>{{ entry.participant }}</td>
-                <td>{{ "%.6f"|format(entry.avg_time) }}</td>
+                <td>{{ "%.6f"|format(entry.avg_time) if entry.avg_time is not none else "N/A" }}</td>
                 <td>{{ entry.num_inputs }}/{{ entry.total_inputs }}</td>
                 <td>
                     <form action="/run/{{ entry.sol_id }}?token={{ token }}" method="post" style="margin:0;">
@@ -89,7 +89,7 @@
             {% for entry in leaderboard2 %}
             <tr>
                 <td>{{ entry.participant }}</td>
-                <td>{{ "%.6f"|format(entry.avg_time) }}</td>
+                <td>{{ "%.6f"|format(entry.avg_time) if entry.avg_time is not none else "N/A" }}</td>
                 <td>{{ entry.num_inputs }}/{{ entry.total_inputs }}</td>
                 <td>
                     <form action="/run/{{ entry.sol_id }}?token={{ token }}" method="post" style="margin:0;">

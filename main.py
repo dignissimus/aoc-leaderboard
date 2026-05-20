@@ -68,17 +68,17 @@ async def day_view(day: int, request: Request, db: Session = Depends(get_db), to
                 if latest_res and latest_res.status == "Accepted":
                     times.append(latest_res.execution_time)
             
-            if times:
-                avg_time = sum(times) / len(times)
-                board.append({
-                    "participant": sol.participant.name,
-                    "avg_time": avg_time,
-                    "num_inputs": len(times),
-                    "total_inputs": len(inputs),
-                    "sol_id": sol.id
-                })
+            avg_time = sum(times) / len(times) if times else None
+            board.append({
+                "participant": sol.participant.name,
+                "avg_time": avg_time,
+                "num_inputs": len(times),
+                "total_inputs": len(inputs),
+                "sol_id": sol.id
+            })
         
-        return sorted(board, key=lambda x: x["avg_time"])
+        # Sort by avg_time, putting None values at the end
+        return sorted(board, key=lambda x: (x["avg_time"] is None, x["avg_time"]))
 
     leaderboard1 = get_leaderboard(1)
     leaderboard2 = get_leaderboard(2)
