@@ -37,6 +37,7 @@ class Solution(Base):
     file_path = Column(String, nullable=False)
     language_id = Column(Integer, nullable=False)
     uuid = Column(String, unique=True, index=True, nullable=False)
+    title = Column(String)
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     participant = relationship("Participant", back_populates="solutions")

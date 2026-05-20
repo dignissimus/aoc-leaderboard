@@ -17,9 +17,22 @@ def verify_token(token: str = Query(...)):
 
 def normalise_name(name: str):
     # Lowercase and replace non-alphanumeric with hyphens
-    return re.sub(r'[^a-z0-9]', '-', name.lower()).strip('-')
+    # This already prevents '../' by stripping everything but a-z0-9 and hyphens
+    norm = re.sub(r'[^a-z0-9]', '-', name.lower()).strip('-')
+    if not norm:
+        raise HTTPException(status_code=400, detail="Invalid name")
+    return norm
 
 def save_file(content: bytes, path: str):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "wb") as f:
+    # Absolute path of the data directory
+    base_dir = os.path.abspath("data")
+    # Absolute path of the target file
+    target_path = os.path.abspath(path)
+    
+    # Ensure the target path is inside the base data directory
+    if not target_path.startswith(base_dir):
+        raise HTTPException(status_code=400, detail="Invalid file path")
+        
+    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+    with open(target_path, "wb") as f:
         f.write(content)

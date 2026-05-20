@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/?token={{ token }}">Dashboard</a></li>
+    <li><a href="/day/{{ sol.day }}?token={{ token }}">Day {{ sol.day }}</a></li>
+    <li>Solution: {{ sol.title }}</li>
+  </ul>
+</nav>
+
+<h2>{{ sol.title }}</h2>
+<p>Submitted by <strong>{{ sol.participant.name }}</strong> for Day {{ sol.day }}, Part {{ sol.part }}</p>
+
+<section>
+    <form action="/solution/{{ sol.id }}/edit?token={{ token }}" method="post">
+        <label for="title">Edit Title
+            <input type="text" name="title" value="{{ sol.title }}" required>
+        </label>
+        <button type="submit">Update Title</button>
+    </form>
+</section>
+
+<section>
+    <h3>Source Code</h3>
+    <pre><code>{{ code }}</code></pre>
+</section>
+
+<section>
+    <h3>Recent Results</h3>
+    {% if results %}
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Time (s)</th>
+                <th>Status</th>
+                <th>Stderr</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in results %}
+            <tr>
+                <td>{{ res.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ "%.6f"|format(res.execution_time) if res.execution_time else "N/A" }}</td>
+                <td>{{ res.status }}</td>
+                <td><small>{{ res.stderr[:50] }}{% if res.stderr|length > 50 %}...{% endif %}</small></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No results yet. Run this solution from the <a href="/day/{{ sol.day }}?token={{ token }}">leaderboard</a>.</p>
+    {% endif %}
+</section>
+{% endblock %}

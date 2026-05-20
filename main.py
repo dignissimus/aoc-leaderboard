@@ -71,6 +71,7 @@ async def day_view(day: int, request: Request, db: Session = Depends(get_db), to
             avg_time = sum(times) / len(times) if times else None
             board.append({
                 "participant": sol.participant.name,
+                "title": sol.title or sol.file_path.split("/")[-1],
                 "avg_time": avg_time,
                 "num_inputs": len(times),
                 "total_inputs": len(inputs),
@@ -116,6 +117,9 @@ async def submit_input(
     # The prompt says: "The backend should support more than one inputs per day but the frontend should only allow people to submit one input per day."
     # I'll interpret this as: many people can submit inputs, and they all contribute to the testing.
     
+    if not (1 <= day <= 25):
+        raise HTTPException(status_code=400, detail="Invalid day")
+        
     file_path = f"data/{norm_name}/input/day-{day:02d}"
     content = await file.read()
     save_file(content, file_path)
@@ -148,6 +152,9 @@ async def submit_solution(
         db.commit()
         db.refresh(participant)
     
+    if not (1 <= day <= 25) or not (1 <= part <= 2):
+        raise HTTPException(status_code=400, detail="Invalid day or part")
+
     sol_uuid = str(uuid.uuid4())
     ext = file.filename.split(".")[-1]
     if ext not in LANG_MAP:
@@ -163,12 +170,52 @@ async def submit_solution(
         part=part,
         file_path=file_path,
         language_id=LANG_MAP[ext],
-        uuid=sol_uuid
+        uuid=sol_uuid,
+        title=file.filename
     )
     db.add(new_sol)
     db.commit()
     
     return RedirectResponse(url=f"/day/{day}?token={token}", status_code=303)
+
+@app.get("/solution/{sol_id}", response_class=HTMLResponse)
+async def solution_view(sol_id: int, request: Request, db: Session = Depends(get_db), token: str = Depends(verify_token)):
+    sol = db.query(Solution).filter(Solution.id == sol_id).first()
+    if not sol:
+        raise HTTPException(status_code=404, detail="Solution not found")
+    
+    with open(sol.file_path, "r") as f:
+        code = f.read()
+    
+    # Get results for this solution
+    results = db.query(Result).filter(Result.solution_id == sol.id).order_by(Result.timestamp.desc()).all()
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name="solution.html", 
+        context={
+            "sol": sol,
+            "code": code,
+            "results": results,
+            "token": token
+        }
+    )
+
+@app.post("/solution/{sol_id}/edit")
+async def solution_edit(
+    sol_id: int, 
+    title: str = Form(...),
+    db: Session = Depends(get_db), 
+    token: str = Depends(verify_token)
+):
+    sol = db.query(Solution).filter(Solution.id == sol_id).first()
+    if not sol:
+        raise HTTPException(status_code=404, detail="Solution not found")
+    
+    sol.title = title
+    db.commit()
+    
+    return RedirectResponse(url=f"/solution/{sol_id}?token={token}", status_code=303)
 
 @app.post("/run/{sol_id}")
 async def run_solution(

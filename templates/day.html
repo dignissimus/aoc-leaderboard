@@ -52,6 +52,7 @@
         <thead>
             <tr>
                 <th>Participant</th>
+                <th>Solution</th>
                 <th>Avg Time (s)</th>
                 <th>Coverage</th>
                 <th>Action</th>
@@ -61,6 +62,7 @@
             {% for entry in leaderboard1 %}
             <tr>
                 <td>{{ entry.participant }}</td>
+                <td><a href="/solution/{{ entry.sol_id }}?token={{ token }}">{{ entry.title }}</a></td>
                 <td>{{ "%.6f"|format(entry.avg_time) if entry.avg_time is not none else "N/A" }}</td>
                 <td>{{ entry.num_inputs }}/{{ entry.total_inputs }}</td>
                 <td>
@@ -80,6 +82,7 @@
         <thead>
             <tr>
                 <th>Participant</th>
+                <th>Solution</th>
                 <th>Avg Time (s)</th>
                 <th>Coverage</th>
                 <th>Action</th>
@@ -89,6 +92,7 @@
             {% for entry in leaderboard2 %}
             <tr>
                 <td>{{ entry.participant }}</td>
+                <td><a href="/solution/{{ entry.sol_id }}?token={{ token }}">{{ entry.title }}</a></td>
                 <td>{{ "%.6f"|format(entry.avg_time) if entry.avg_time is not none else "N/A" }}</td>
                 <td>{{ entry.num_inputs }}/{{ entry.total_inputs }}</td>
                 <td>
