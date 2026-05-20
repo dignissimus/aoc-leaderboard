@@ -23,7 +23,23 @@
 
 <section>
     <h3>Source Code</h3>
-    <pre><code>{{ code }}</code></pre>
+    {% set lang_map = {
+        'py': 'python',
+        'rs': 'rust',
+        'cpp': 'cpp',
+        'cc': 'cpp',
+        'cxx': 'cpp',
+        'c++': 'cpp',
+        'c': 'c',
+        'f90': 'fortran',
+        'f': 'fortran',
+        'hs': 'haskell',
+        'go': 'go',
+        'ts': 'typescript',
+        'js': 'javascript'
+    } %}
+    {% set prism_lang = lang_map.get(extension, 'clike') %}
+    <pre><code class="language-{{ prism_lang }}">{{ code }}</code></pre>
 </section>
 
 <section>

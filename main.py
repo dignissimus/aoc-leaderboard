@@ -190,6 +190,8 @@ async def solution_view(sol_id: int, request: Request, db: Session = Depends(get
     # Get results for this solution
     results = db.query(Result).filter(Result.solution_id == sol.id).order_by(Result.timestamp.desc()).all()
     
+    ext = sol.file_path.split(".")[-1]
+
     return templates.TemplateResponse(
         request=request, 
         name="solution.html", 
@@ -197,7 +199,8 @@ async def solution_view(sol_id: int, request: Request, db: Session = Depends(get
             "sol": sol,
             "code": code,
             "results": results,
-            "token": token
+            "token": token,
+            "extension": ext
         }
     )
 
