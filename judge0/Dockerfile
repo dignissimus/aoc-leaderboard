@@ -4,9 +4,9 @@ FROM judge0/judge0:1.13.1-extra
 # Switch to root to install system packages
 USER root
 
-# 1. Install Fortran 90 (gfortran) and Haskell (ghc)
+# 1. Install Fortran 90 (gfortran)
 RUN apt-get update && \
-    apt-get install -y gfortran ghc && \
+    apt-get install -y gfortran && \
     rm -rf /var/lib/apt/lists/*
 
 # 2. Install Custom Rust
