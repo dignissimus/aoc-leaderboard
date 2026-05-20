@@ -60,7 +60,16 @@
                 <td>{{ res.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 <td>{{ "%.6f"|format(res.execution_time) if res.execution_time else "N/A" }}</td>
                 <td>{{ res.status }}</td>
-                <td><small>{{ res.stderr[:50] }}{% if res.stderr|length > 50 %}...{% endif %}</small></td>
+                <td>
+                    {% if res.stderr %}
+                    <details>
+                        <summary>View</summary>
+                        <pre style="font-size: 0.8rem; padding: 0.5rem; background: #1e1e1e; color: #d4d4d4; border-radius: 4px; overflow-x: auto;">{{ res.stderr }}</pre>
+                    </details>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
