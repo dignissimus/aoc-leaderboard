@@ -12,5 +12,4 @@ wheels/
 # Project specific
 secrets/
 data/
-judge0-*/
 *.db
