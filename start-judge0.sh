@@ -32,11 +32,8 @@ if [ -z "$POSTGRES_PWD" ]; then
 fi
 
 # Run services
-echo "Building and starting Judge0 services..."
+echo "Starting Judge0 services..."
 cd "$DIR_NAME" || exit
-
-# Build custom image
-docker compose build --progress=plain --no-cache
 
 # Start DB and Redis first
 docker compose up -d db redis
@@ -48,19 +45,4 @@ docker compose up -d
 echo "Waiting for services to initialize..."
 sleep 10s
 
-# Register custom languages in the database
-echo "Registering custom languages..."
-
-# Fortran 90 (ID 101)
-docker compose exec -T db psql -U judge0 -d judge0 -c "
-INSERT INTO languages (id, name, compile_cmd, run_cmd, source_file, is_archived, created_at, updated_at) 
-VALUES (101, 'Fortran 90 (gfortran)', '/usr/bin/gfortran -O2 -Wall -o main main.f90', './main', 'main.f90', false, NOW(), NOW())
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, compile_cmd = EXCLUDED.compile_cmd, run_cmd = EXCLUDED.run_cmd;"
-
-# Custom Rust (ID 102)
-docker compose exec -T db psql -U judge0 -d judge0 -c "
-INSERT INTO languages (id, name, compile_cmd, run_cmd, source_file, is_archived, created_at, updated_at) 
-VALUES (102, 'Rust (Custom)', '/usr/local/cargo/bin/rustc -O main.rs', './main', 'main.rs', false, NOW(), NOW())
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, compile_cmd = EXCLUDED.compile_cmd, run_cmd = EXCLUDED.run_cmd;"
-
-echo "Judge0 is now running with custom languages."
+echo "Judge0 is now running."

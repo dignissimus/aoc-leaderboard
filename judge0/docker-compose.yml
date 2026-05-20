@@ -7,8 +7,7 @@ x-logging:
 
 services:
   server:
-    image: aoc-judge0
-    build: .
+    image: judge0/judge0:1.13.1-extra
     volumes:
       - ./judge0.conf:/judge0.conf:ro
     ports:
@@ -18,8 +17,7 @@ services:
     restart: always
 
   workers:
-    image: aoc-judge0
-    build: .
+    image: judge0/judge0:1.13.1-extra
     command: ["./scripts/workers"]
     volumes:
       - ./judge0.conf:/judge0.conf:ro

@@ -16,7 +16,6 @@ This will create `secrets/token`. All pages require `?token=YOUR_TOKEN` to load.
 ```bash
 ./start-judge0.sh
 ```
-This script builds a custom Docker image (including GFortran and custom Rust) and automatically registers the new languages in the Judge0 database (IDs 101 and 102).
 
 ### Dependencies
 
