@@ -5,16 +5,22 @@ import base64
 JUDGE0_URL = "http://localhost:2358"
 
 # Mapping extensions to Judge0 language IDs (v1.13.1-extra)
-# Python: 71, Rust: 73, C++ (GCC 9.2.0): 54
+# Python: 71, Rust: 73, C++ (GCC 9.2.0): 54, Fortran (GFortran 9.2.0): 59
 # We can expand this as needed.
 LANG_MAP = {
     "py": 71,
     "rs": 73,
     "cpp": 54,
+    "cc": 54,
+    "cxx": 54,
+    "c++": 54,
     "c": 48,
     "js": 63,
     "ts": 74,
     "go": 60,
+    "f90": 59,
+    "f": 59,
+    "hs": 61,
 }
 
 async def submit_to_judge0(source_code: str, language_id: int, stdin: str = ""):
