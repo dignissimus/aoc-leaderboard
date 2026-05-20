@@ -8,3 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Project specific
+secrets/
+data/
+judge0-*/
+*.db

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Select a Day</h2>
+<div class="grid-days">
+    {% for day in days %}
+    <a href="/day/{{ day }}?token={{ token }}" class="day-card">
+        <strong>Day {{ day }}</strong>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

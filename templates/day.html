@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Day {{ day }}</h2>
+
+<div class="grid">
+    <section>
+        <h3>Submit Input</h3>
+        <form action="/submit/input?token={{ token }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="day" value="{{ day }}">
+            <label for="name">Name
+                <input type="text" list="participants" name="participant_name" placeholder="Your Name" required>
+                <datalist id="participants">
+                    {% for p in participants %}
+                    <option value="{{ p.name }}">
+                    {% endfor %}
+                </datalist>
+            </label>
+            <label for="file">Input File
+                <input type="file" name="file" required>
+            </label>
+            <button type="submit">Submit Input</button>
+        </form>
+    </section>
+
+    <section>
+        <h3>Submit Solution</h3>
+        <form action="/submit/solution?token={{ token }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="day" value="{{ day }}">
+            <label for="name_sol">Name
+                <input type="text" list="participants" name="participant_name" placeholder="Your Name" required>
+            </label>
+            <label for="part">Part
+                <select name="part" required>
+                    <option value="1">Part 1</option>
+                    <option value="2">Part 2</option>
+                </select>
+            </label>
+            <label for="file_sol">Solution File (.py, .rs, .cpp, etc.)
+                <input type="file" name="file" required>
+            </label>
+            <button type="submit" class="secondary">Submit Solution</button>
+        </form>
+    </section>
+</div>
+
+<hr>
+
+<div class="leaderboard">
+    <h3>Leaderboard - Part 1</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Avg Time (s)</th>
+                <th>Coverage</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in leaderboard1 %}
+            <tr>
+                <td>{{ entry.participant }}</td>
+                <td>{{ "%.6f"|format(entry.avg_time) }}</td>
+                <td>{{ entry.num_inputs }}/{{ entry.total_inputs }}</td>
+                <td>
+                    <form action="/run/{{ entry.sol_id }}?token={{ token }}" method="post" style="margin:0;">
+                        <button type="submit" class="outline contrast" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Run</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="leaderboard">
+    <h3>Leaderboard - Part 2</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Avg Time (s)</th>
+                <th>Coverage</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in leaderboard2 %}
+            <tr>
+                <td>{{ entry.participant }}</td>
+                <td>{{ "%.6f"|format(entry.avg_time) }}</td>
+                <td>{{ entry.num_inputs }}/{{ entry.total_inputs }}</td>
+                <td>
+                    <form action="/run/{{ entry.sol_id }}?token={{ token }}" method="post" style="margin:0;">
+                        <button type="submit" class="outline contrast" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Run</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
